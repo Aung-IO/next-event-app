@@ -18,7 +18,8 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { startTransition, useState } from "react"
+import { createCategory, getAllCategories } from "@/lib/actions/category.actions"
+import { startTransition, useEffect, useState } from "react"
 import { Input } from "../ui/input"
 
 
@@ -32,12 +33,24 @@ export default function DropDown({ value, onChangeHandler }: DropdownProps) {
     const [newCategory, setNewCategory] = useState<string>("")
 
     const handleAddCategory = () => {
-        alert("handleAddCategory")
+        createCategory({ categoryName: newCategory.trim() }).then(category => {
+            setCategories(prev => [category, ...prev])
+            setNewCategory("")
+        })
     }
+
+    useEffect(() => {
+        const getCategories = async () => {
+            const categoryList = await getAllCategories();
+            categoryList && setCategories(categoryList as ICategory[])
+        }
+        getCategories()
+    }, [])
+
     return (
         <Select onValueChange={onChangeHandler} defaultValue={value}>
             <SelectTrigger className="select-field">
-                <SelectValue placeholder="Category" />
+                <SelectValue placeholder="Choose a category" />
             </SelectTrigger>
             <SelectContent>
                 {categories.length > 0 && categories.map(category => (
@@ -46,7 +59,7 @@ export default function DropDown({ value, onChangeHandler }: DropdownProps) {
                     </SelectItem>
                 ))}
                 <AlertDialog>
-                    <AlertDialogTrigger className="p-medium-14 flex w-full rounded-sm py-4 pl-8 text-primary-500 hover:bg-primary-50 focus:text-primary-500">Open</AlertDialogTrigger>
+                    <AlertDialogTrigger className="p-medium-14 flex w-full rounded-sm py-4 pl-8 text-primary-500 hover:bg-primary-50 focus:text-primary-500">Add new category</AlertDialogTrigger>
                     <AlertDialogContent className="bg-white">
                         <AlertDialogHeader>
                             <AlertDialogTitle>New Category</AlertDialogTitle>

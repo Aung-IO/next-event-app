@@ -10,11 +10,7 @@ export default authMiddleware({
     "/api/uploadthing",
     "/assets/images/dotted-pattern.png",
   ],
-  ignoredRoutes: [
-    "/api/webhooks/clerk",
-    "/api/webhooks/stripe",
-    "/api/uploadthing",
-  ],
+  ignoredRoutes: ["/api/webhooks/stripe", "/api/uploadthing"],
 });
 
 export const config = {
